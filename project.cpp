@@ -1,12 +1,27 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 int rows;
 
-int fn(std::vector<int> &stairs)
-{
-    int row = rows - 1, height = 1, result = 0;
+std::unordered_map<std::string, long long unsigned> computed_values;
+
+long long unsigned fn(std::vector<int> &stairs)
+{   
+    std::string str_stairs;
+    for (int i = 0; i < rows; i++)
+    {
+        str_stairs += std::to_string(stairs.at(i));
+    }
+
+    if (computed_values.count(str_stairs) > 0)
+    {
+        return computed_values.at(str_stairs);
+    }
+
+    int row = rows - 1, height = 1;
+    long long unsigned result = 0;
 
     while (row > 0 && stairs.at(row - 1) >= stairs.at(row))
     {
@@ -40,6 +55,8 @@ int fn(std::vector<int> &stairs)
         result += height > 1 ? fn(stairs_copy) + 1 : fn(stairs_copy);
         height--;
     }
+
+    computed_values[str_stairs] = result;
 
     return result;
 }

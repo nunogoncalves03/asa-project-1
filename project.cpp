@@ -1,36 +1,35 @@
 #include <iostream>
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 int rows;
-
 std::unordered_map<std::string, long long unsigned> computed_values;
 
-long long unsigned fn(std::vector<int> &stairs)
-{   
+long long unsigned compute(std::vector<int> &stairs)
+{
     std::string str_stairs;
     for (int i = 0; i < rows; i++)
     {
-        str_stairs += std::to_string(stairs.at(i));
+        str_stairs += std::to_string(stairs[i]);
     }
 
     if (computed_values.count(str_stairs) > 0)
     {
-        return computed_values.at(str_stairs);
+        return computed_values[str_stairs];
     }
 
     int row = rows - 1, height = 1;
     long long unsigned result = 0;
 
-    while (row > 0 && stairs.at(row - 1) >= stairs.at(row))
+    while (row > 0 && stairs[row - 1] >= stairs[row])
     {
-        if (stairs.at(row) > height)
+        if (stairs[row] > height)
         {
             height++;
         }
 
-        if (stairs.at(row - 1) > stairs.at(row))
+        if (stairs[row - 1] > stairs[row])
         {
             height = 1;
         }
@@ -38,7 +37,7 @@ long long unsigned fn(std::vector<int> &stairs)
         row--;
     };
 
-    if (stairs.at(row) == 0)
+    if (stairs[row] == 0)
     {
         return 0;
     }
@@ -49,15 +48,14 @@ long long unsigned fn(std::vector<int> &stairs)
 
         for (int i = 0; i < height; i++)
         {
-            stairs_copy.at(row + i) -= height;
+            stairs_copy[row + i] -= height;
         }
 
-        result += height > 1 ? fn(stairs_copy) + 1 : fn(stairs_copy);
+        result += height > 1 ? compute(stairs_copy) + 1 : compute(stairs_copy);
         height--;
     }
 
     computed_values[str_stairs] = result;
-
     return result;
 }
 
@@ -70,9 +68,9 @@ int main()
     std::vector<int> stairs(rows);
     for (int i = 0; i < rows; i++)
     {
-        std::cin >> stairs.at(i);
+        std::cin >> stairs[i];
 
-        if (stairs.at(i) != 0)
+        if (stairs[i] != 0)
         {
             empty = false;
         }
@@ -84,7 +82,6 @@ int main()
         return 0;
     }
 
-    std::cout << fn(stairs) + 1 << std::endl;
-
+    std::cout << compute(stairs) + 1 << std::endl;
     return 0;
 }
